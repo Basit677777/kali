@@ -1,13 +1,12 @@
 FROM kalilinux/kali-rolling
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get -y install wget
+RUN apt update && apt upgrade -y
+RUN apt install git -y
+COPY requirements.txt /requirements.txt
 
-RUN wget -qO /bin/ttyd https://github.com/tsl0922/ttyd/releases/download/1.7.3/ttyd.x86_64 && \
-    chmod +x /bin/ttyd
-
-EXPOSE $PORT
-RUN echo $CREDENTIAL > /tmp/debug
-
-CMD ["/bin/bash", "-c", "/bin/ttyd -p $PORT -c $USERNAME:$PASSWORD /bin/bash"]
+RUN cd /
+RUN pip3 install -U pip && pip3 install -U -r requirements.txt
+RUN mkdir /ben-url-filter-bot
+WORKDIR /ben-url-filter-bot
+COPY start.sh /start.sh
+CMD ["/bin/bash", "/start.sh"]
